@@ -1,0 +1,489 @@
+<div class="alert" style="display:none"></div>
+
+<?php if (\Control::goodip() && $form->getUserOption('isOneYes')) : ?>
+    <input type='button' class='btn btn-danger pull-right' style='margin-top: -15px' value='Content Rating (Good IP)'/>
+<? endif ?>
+
+<? // Bloc Credentials ?>
+<h4 class="first"><strong><?= strtoupper($this->translater->get("APPS_INFOS_CREDENTIALS_TITLE")) ?></strong></h4>
+<div class="store-accounts">
+    <h3><strong><?= $this->translater->get("APPS_CERT_66") ?></strong></h3>
+    <p>
+        <em>
+            <?= str_replace("[PLATFORM]", "Android", $this->translater->get("APPS_CERT_48")) ?>
+            <br/><?= str_replace("[GOOGLEHELP]", "&nbsp;<a class=\"fa fa-question-circle\" target=\"_blank\" href=\"https://support.google.com/accounts/answer/1064203?hl=en\"></a>", $this->translater->get("APPS_CERT_138")) ?>
+        </em>
+    </p>
+
+    <div class="row">
+        <?php foreach (array("developerId", "developerPass", "telephone") as $element): ?>
+            <div class="col-sm-<?php echo($element == "telephone" ? "5" : "3") ?>">
+                <label><?= $form->get($element)->getLabel() ?></label>
+                <div class="form-group<?= ($form->hasMessagesFor($element) ? " has-feedback has-error" : "") ?>">
+                    <?= $form->get($element)->render() ?>
+                    <?php if ($form->hasMessagesFor($element)): ?>
+                        <span class="fa fa-warning form-control-feedback"></span>
+                        <span class="help-block"><?= $form->getMessagesFor($element)[0] ?></span>
+                    <?php endif ?>
+                </div>
+            </div>
+        <?php endforeach ?>
+    </div>
+
+    <div class="row">
+        <?php foreach (array("recoveryemail", "googleplaydeveloppername") as $element): ?>
+            <div class="col-sm-<?php echo($element == "googleplaydeveloppername" ? "5" : "6") ?>">
+                <label><?= $form->get($element)->getLabel() ?></label>
+                <div class="form-group<?= ($form->hasMessagesFor($element) ? " has-feedback has-error" : "") ?>">
+                    <?= $form->get($element)->render() ?>
+                    <?php if ($form->hasMessagesFor($element)): ?>
+                        <span class="fa fa-warning form-control-feedback"></span>
+                        <span class="help-block"><?= $form->getMessagesFor($element)[0] ?></span>
+                    <?php endif ?>
+                </div>
+            </div>
+        <?php endforeach ?>
+    </div>
+</div>
+<br/>
+
+<? // Bloc UPDATE ?>
+<? if ($form->has('currentVersion')) : ?>
+    <h4 class="first"><strong><?= strtoupper($this->translater->get("APPS_INFOS_UPDATE")) ?></strong></h4>
+
+    <?php foreach ($form->blocUpdate as $element): $elementName = $element->getName(); ?>
+        <? if (!preg_match('/^update-/', $elementName)) : ?>
+            <?php list($h3, $label) = explode("|", $element->getLabel() . "|") ?>
+            <h3><strong><?= $h3 ?></strong></h3>
+            <p><em><?= $label ?></em></p>
+            <div class="form-group<?= ($form->hasMessagesFor($elementName) ? " has-feedback nocontrol-label has-error" : "") ?>">
+                <?= $element->render() ?>
+                <?php if ($form->hasMessagesFor($elementName)): ?>
+                    <span class="fa fa-warning form-control-feedback"></span>
+                    <span class="help-block"><?= $form->getMessagesFor($elementName)[0] ?></span>
+                <?php endif ?>
+
+                <?php if ($elementName == "currentVersion" && !$form->hasMessagesFor($elementName)): ?>
+                    <small><?= nl2br($this->translater->get("GBSUBMISSION_MIN_VERSION")) ?></small>
+                <? endif ?>
+            </div>
+        <? endif ?>
+    <? endforeach ?>
+
+    <h3>
+        <strong><?= str_replace('[VERSION]', $form->version, $this->translater->get('APPS_INFOS_UPDATE_DETAIL')) ?></strong>
+    </h3>
+    <div id="update-fields">
+        <div class="row">
+            <?php foreach ($form->blocUpdate as $element): ?>
+                <? if (preg_match('/^update-/', $element->getName())) : ?>
+                    <div class="col-xs-6">
+                        <label for='<?= $element->getName() ?>'>
+                            <?= $element->render() . " " . $element->getLabel(); ?>
+                        </label>
+                    </div>
+                <? endif ?>
+            <? endforeach ?>
+        </div>
+    </div>
+    <br/>
+<? else: ?>
+    <? // Bloc Package name ?>
+    <h4 class="first"><strong><?= strtoupper($this->translater->getStatic("Package Name")) ?></strong></h4>
+    <div class="form-horizontal">
+        <div class="row">
+            <p class="col-sm-12"><em><?= $this->translater->get("APPS_INFOS_38") ?></em></p>
+            <label class="col-sm-2"><?= $this->translater->getStatic("Package Name") ?> :</label>
+            <div class="col-sm-10 form-group nocontrol-label">
+                <?= $form->packageName->render(); ?>
+            </div>
+        </div>
+    </div>
+    </br>
+<? endif ?>
+
+
+<? // Bloc APP INFORMATION ?>
+<h4 class="first"><strong><?= strtoupper($this->translater->get("APPS_INFOS_TITLE")) ?></strong></h4>
+<div class="store-accounts">
+    <?php foreach ($form->blocAppInfo as $element): ?>
+        <?php list($h3, $label) = explode("|", $element->getLabel() . "|") ?>
+        <h3><strong><?= $h3 ?></strong></h3>
+        <p><em><?= $label ?></em></p>
+        <div class="form-group nocontrol-label relative<?= ($form->hasMessagesFor($element->getName()) ? " has-feedback has-error" : "") ?>">
+            <?= $element->render() ?>
+            <?php if ($form->hasMessagesFor($element->getName())): ?>
+                <span class="fa fa-warning form-control-feedback"></span>
+                <span class="help-block"><?= $form->getMessagesFor($element->getName())[0] ?></span>
+            <?php endif ?>
+        </div>
+    <?php endforeach ?>
+</div>
+<br/>
+
+<? // Bloc GRAPHICS ASSETS ?>
+<h4 class="first"><strong><?= strtoupper($this->translater->get("APPS_INFOS_GRAPHICS_ASSETS")) ?></strong></h4>
+<h3><strong><?= $this->translater->get("APPS_INFOS_ICON") ?></strong></h3>
+<img src="<?= $appIconUrl ?>" alt="" style="width: 100px; margin-bottom: 10px;"/>
+<p><em><?= $textAppIcon ?></em></p>
+
+<h3><strong><?= $this->translater->get("APPS_INFOS_FEATURED_IMAGE") ?></strong></h3>
+<p><em><?= $this->translater->get("APPS_CERT_134") ?></em></p>
+<?= $this->ui->changeImageWithPreview(
+    array("objet" => "compilation/store/featuredIcon",
+        "fake" => "upload-image|",
+        "platform" => "android",
+        "fake_preview_width" => 400,
+        "alertSelector" => "#main-content",
+        "nobadquality" => true,
+        "displayPreview2x" => true,
+        "mode_imageSave" => 1
+    )
+) ?>
+
+<h3><strong><?= $this->translater->get("APPS_INFOS_SCREENSHOTS") ?></strong></h3>
+<div class="form-group">
+    <?php foreach (array("screenshotauto-no", "screenshotauto-yes") as $element): ?>
+        <div class="radio">
+            <label>
+                <?= $form->get($element)->render() ?>
+                <?= $form->get($element)->getLabel() ?>
+            </label>
+        </div>
+    <?php endforeach ?>
+</div>
+<div id="screenshots-uploader"
+     style="<?= ($form->get('screenshotauto-no')->getValue() == 'no' ? '' : 'display: none') ?>">
+    <div class="row">
+        <? for ($i = 0; $i < 5; $i++) {
+            echo '<div class="col-xs-2">';
+            echo $this->ui->changeImageWithPreview(
+                array("objet" => "compilation/store/screenshot/$i",
+                    "fake" => "upload-image|",
+                    "fake_objet" => "compilation/store/screenshot",
+                    "fake_preview_width" => 120,
+                    "fake_preview_height" => 240,
+                    "platform" => "android",
+                    "alertSelector" => "#main-content",
+                    "nobadquality" => true,
+                    "displayPreview2x" => true,
+                    "control_format" => "notransparency",
+                )
+            );
+            echo "</div>";
+        }
+        ?>
+    </div>
+</div>
+
+
+<br/>
+
+<? // Bloc CATEGORY ?>
+<h4 class="first"><strong><?= strtoupper($this->translater->get("APPS_INFOS_CATEGORY")) ?></strong></h4>
+<div class="store-accounts">
+    <? $element = $form->get('category'); ?>
+    <?php list($h3, $label) = explode("|", $element->getLabel() . "|") ?>
+    <p><em><?= $label ?></em></p>
+    <div class="form-group nocontrol-label<?= ($form->hasMessagesFor($element->getName()) ? " has-feedback has-error" : "") ?>">
+        <?= $element->render() ?>
+        <?php if ($form->hasMessagesFor($element->getName())): ?>
+            <span class="fa fa-warning form-control-feedback"></span>
+            <span class="help-block"><?= $form->getMessagesFor($element->getName())[0] ?></span>
+        <?php endif ?>
+    </div>
+
+    <? // Sous-bloc Android Policy ?>
+    <?= $this->partial("partials/cert/android-policy-newapp") ?>
+
+</div>
+<br/>
+
+<? // Bloc CONTACT DETAILS ?>
+
+<h4 class="first"><strong><?= strtoupper($this->translater->get("APPS_INFOS_CONTACT_DETAILS")) ?></strong></h4>
+<?php foreach ($form->blocContactDetail as $element): ?>
+    <?php list($h3, $label) = explode("|", $element->getLabel() . "|") ?>
+    <h3><strong><?= $h3 ?></strong></h3>
+    <p><em><?= $label ?></em></p>
+    <div class="form-group nocontrol-label<?= ($form->hasMessagesFor($element->getName()) ? " has-feedback has-error" : "") ?>">
+        <?= $element->render() ?>
+        <?php if ($form->hasMessagesFor($element->getName())): ?>
+            <span class="fa fa-warning form-control-feedback"></span>
+            <span class="help-block"><?= $form->getMessagesFor($element->getName())[0] ?></span>
+        <?php endif ?>
+    </div>
+<?php endforeach ?>
+
+<? // Bloc NEW RATING ?>
+<?= $this->partial("partials/cert/android-rating") ?>
+<br/>
+
+
+<? // Bloc PRICING ?>
+<h4 class="first"><strong><?= strtoupper($this->translater->get("APPS_INFOS_PRICING")) ?></strong></h4>
+<h3><strong><?= $this->translater->get("APPS_CERT_128") ?> :</strong></h3>
+<div class="form-group">
+    <?php foreach (array("availability-free", "availability-pay") as $element): ?>
+        <div class="radio">
+            <label>
+                <?= $form->get($element)->render() ?>
+                <?= $form->get($element)->getLabel() ?>
+            </label>
+
+            <?php if ($element == "availability-pay"): ?>
+                <span class="form-inline nocontrol-label"
+                      style="<?= ($form->get("availability-pay")->getValue() == 'pay' ? '' : 'display: none') ?>">
+					<?= $form->get("availability-price")->render() ?>
+                    <em><?= $this->translater->get("APPS_INFOS_PRICING_CURRENCY") ?></em>
+                    <div><?= $this->translater->get("APPS_INFOS_PRICING_LOCAL") ?></div>
+				</span>
+            <?php endif ?>
+        </div>
+    <?php endforeach ?>
+    <p><em><?= $this->translater->get("APPS_CERT_139") ?></em></p>
+</div>
+
+<div id="has-tax" style="<?= ($form->get("availability-pay")->getValue() == 'pay' ? '' : 'display: none') ?>">
+    <h3><strong><?= $this->translater->get("APPS_INFOS_TAX") ?></strong></h3>
+    <div class="form-group">
+        <?php foreach (array("pricehastax-yes", "pricehastax-no") as $element): ?>
+            <div class="radio">
+                <label>
+                    <?= $form->get($element)->render() ?>
+                    <?= $form->get($element)->getLabel() ?>
+                </label>
+            </div>
+        <?php endforeach ?>
+    </div>
+    <p><em><?= $this->translater->get("APPS_INFOS_TAX_RATES") ?></em></p>
+</div>
+
+<h3><strong><?= $this->translater->get("APPS_CERT_125") ?> :</strong></h3>
+<div class="form-group">
+    <?php foreach (array("pays-all", "pays-select") as $element): ?>
+        <div class="radio">
+            <label>
+                <?= $form->get($element)->render() ?>
+                <?= $form->get($element)->getLabel() ?>
+            </label>
+            <?php if ($element == "pays-select"): ?>
+                <?= $selectPays ?>
+            <?php endif ?>
+        </div>
+    <?php endforeach ?>
+</div>
+
+<h3><strong><?= $this->translater->get("APPS_CERT_124") ?></strong></h3>
+<div class="form-group">
+    <?php foreach (array("adverstise-yes", "adverstise-no") as $element): ?>
+        <div class="radio">
+            <label>
+                <?= $form->get($element)->render() ?>
+                <?= $form->get($element)->getLabel() ?>
+            </label>
+            <?php if ($element == "availability-pay"): ?>
+                <span class="form-group form-inline nocontrol-label">
+			<?= $form->get("availability-price")->render() ?>
+			</span>
+            <?php endif ?>
+        </div>
+    <?php endforeach ?>
+</div>
+
+<?php if ($form->has("demoUser")): ?>
+    <h3><strong><?= $this->translater->get("GBSUBMISSION_58") ?></strong></h3>
+    <p><em><?= str_replace("[PLATFORM]", "Google", $this->translater->get("APPS_INFOS_39")) ?></em></p>
+
+    <div class="row">
+        <?php foreach (array("demoUser", "demoPass") as $element): ?>
+            <div class="col-sm-5">
+                <label><?= $form->get($element)->getLabel() ?></label>
+                <div class="form-group nocontrol-label<?= ($form->hasMessagesFor($form->get($element)->getName()) ? " has-feedback has-error" : "") ?>">
+                    <?= $form->get($element)->render() ?>
+                    <?php if ($form->hasMessagesFor($form->get($element)->getName())): ?>
+                        <span class="fa fa-warning form-control-feedback"></span>
+                        <span class="help-block"><?= $form->getMessagesFor($form->get($element)->getName())[0] ?></span>
+                    <?php endif ?>
+                </div>
+            </div>
+        <?php endforeach ?>
+    </div>
+<?php endif ?>
+
+<br/>
+
+<? // Bloc PERMISSIONS DECLARATION ?>
+<? if ($this->acl->isAddonInstalled("pushgeofence")): ?>
+    <h4 class="first">
+        <strong><?= mb_strtoupper($this->translater->get("APPS_INFOS_PERMISSIONS_DECLARATION")) ?></strong>
+    </h4>
+    <div class="store-accounts">
+        <h3>
+            <strong><?= $this->translater->get("APPS_INFOS_LOCATION_PERMISSIONS") ?></strong><?= $this->eventsManager->fire("view:renderLinkOnlineHelp", ["numhelp" => 374, "target" => "_blank"]); ?>
+        </h3>
+        <p>
+            <em><?= $this->translater->get("APPS_INFOS_LOCATION_PERMISSIONS_DESC") ?><a
+                        href="https://support.google.com/googleplay/android-developer/answer/9799150"
+                        target="_blank"> <?= $this->translater->get("APPS_INFOS_LOCATION_PERMISSIONS_LEARN_MORE") ?></a>
+            </em>
+        </p>
+        <? foreach ($form->permissionsDeclaration as $element): ?>
+            <br>
+            <?= $element->getLabel() ?>
+            <div class="form-group relative">
+                <?= $element->render() ?>
+            </div>
+        <? endforeach ?>
+    </div>
+<? endif ?>
+
+<?php
+$this->view->inlineCss .=
+    "
+.infos h3 { margin-bottom: 30px; margin-top: 30px; }
+.store-accounts { background: #F3F3F3; padding: 20px; }
+.store-accounts #rating td, .store-accounts #rating th  { text-align: center }
+.store-accounts #rating td:first-child, .store-accounts #rating th:first-child { text-align: left }
+.fileinput-button input { font-size: 100% !important; height: 100% !important }
+
+.store-content { background: #F3F3F3; padding: 20px; }
+.content-rating-title {margin-top: 10px; border-bottom: 1px solid #dddddd; margin-bottom: 10px; font-weight: bold;}
+.radio2 label {color: #555555; font-weight: bold;}
+.rating-question-title { margin-top: 10px; color: #8C9DA5; font-weight: bold; border-top: 1px solid #dddddd; padding-top: 5px;}
+.radio-error, .radio-error .rating-question-title, .radio-error label {color: #e74c3c}
+.rating-subquestion-level2, .rating-subquestion-level3 {padding-left: 50px}
+#form-cert label .material-icons{font-size: initial;}
+#form-cert .infos .form-group{position: relative}
+#container-android-compilation_store_featuredIcon a.has-error, #screenshots-uploader .container-upload-chose-file a.has-error { border: 1px solid #e74c3c}
+#container-android-compilation_store_featuredIcon a.upload-image.upload-image-not-exists { padding-top: 35px;}
+.container-upload-chose-file a.upload-image.upload-image-not-exists { padding-top: 15px;}
+a.upload-image span.info{width: 90%;}
+.relative { position: relative; }
+.character-count { margin-top: 2px; }
+.form-horizontal label { width: 200px !important }
+.form-horizontal .col-sm-10 { width: 350px !important }
+
+";
+?>
+
+<script>
+    var APPS_INFOS_27 = '<?= addslashes($this->translater->get("APPS_INFOS_27")) ?>';
+
+    $('[name="availability"]').on('click', function () {
+        if ($(this).val() == "free") {
+            $('#availability-price').removeClass('control-notempty').removeClass('control-float').parent().hide();
+            $('#has-tax').hide();
+        } else {
+            $('#availability-price').addClass('control-notempty').addClass('control-float').parent().show();
+            $('#has-tax').show();
+        }
+    });
+
+    $('[name="pays"]').on('click', function () {
+        if ($(this).val() == "all") $('.list-country').parent().addClass('hidden');
+        else $('.list-country').parent().removeClass('hidden');
+    });
+
+    $('[name="pays"]:checked, [name="availability"]:checked').click();
+
+
+    $('#form-cert').submit(function (e) {
+        var lock = false;
+
+
+        tabKey = [];
+        $('.control-radio-notempty:visible', $(this)).each(function () {
+            if (typeof tabKey[$(this).attr('name')] == 'undefined' || tabKey[$(this).attr('name')] != true) {
+                tabKey[$(this).attr('name')] = $(this).is(':checked');
+                //console.log('add entry '+$(this).attr('name')+'val :'+$(this).is(':checked'));
+            }
+
+        });
+
+        // Classe erreur sur tous les radios non sélectionnées
+        for (var key in tabKey) {
+            if (tabKey[key] == false) {
+                $('#' + key + '-oui').closest('.em').addClass('radio-error');
+                lock = true;
+            } else
+                $('#' + key + '-oui').closest('.em').removeClass('radio-error');
+        }
+
+        tabKey = [];
+        $('.control-checkbox-notempty:visible', $(this)).each(function () {
+            var key = $(this).attr('name').split("-")[0];
+            if (typeof tabKey[key] == 'undefined' || tabKey[key] != true) {
+                tabKey[key] = $(this).is(':checked');
+            }
+
+        });
+
+        // Classe erreur sur tous les checkbox non sélectionnées
+        for (var key in tabKey) {
+            if (tabKey[key] == false) {
+                $('#' + key + '-oui').closest('.em').addClass('radio-error');
+                lock = true;
+            } else
+                $('#' + key + '-oui').closest('.em').removeClass('radio-error');
+        }
+
+        // Classe erreur si aucun champs "update-" coché
+        if ($('#update-fields [id^="update-"]').length > 0 && $('#update-fields [id^="update-"]:checked').length == 0) {
+            $('#update-fields').addClass('radio-error');
+            lock = true;
+        } else {
+            $('#update-fields').removeClass('radio-error');
+        }
+
+        // Specifite sur l'uploader Featured Image
+        if ($('#container-android-compilation_store_featuredIcon .upload-image-not-exists').length) {
+            // Image feature vide
+            $('#container-android-compilation_store_featuredIcon a').addClass('has-error').focus();
+            lock = true;
+        }
+
+        // Control on own screenshots
+        var screenshotUploadersWithoutImage = $('#screenshots-uploader .container-upload-chose-file .upload-image-not-exists');
+        if ($('#screenshotauto-no').is(':checked') && screenshotUploadersWithoutImage.length) {
+            // Image feature vide
+            screenshotUploadersWithoutImage.addClass('has-error').focus();
+            lock = true;
+        }
+
+
+        if (lock) {
+            e.preventDefault();
+            $(this).find('.submission button').button('reset');
+        }
+    });
+
+    $('.control-radio-notempty').on('click', function (e) {
+        $(this).closest('.em').removeClass('radio-error');
+    });
+
+    $('#update-nochange').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#update-fields [id^="update-"]:not(#update-nochange):checked').next().trigger('click');
+        }
+    });
+
+    $('#update-fields [id^="update-"]:not(#update-nochange)').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#update-fields #update-nochange:checked').next().trigger('click');
+        }
+    });
+
+    if ($('#screenshotauto-yes').is(':checked')) {
+        $('#screenshots-uploader').hide();
+    }
+
+    $('[name="screenshotauto"]').on('click', function () {
+        if ($(this).val() == "yes") {
+            $('#screenshots-uploader').hide(150);
+        } else {
+            $('#screenshots-uploader').show(150);
+        }
+    });
+
+</script>

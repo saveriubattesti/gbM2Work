@@ -1,0 +1,61 @@
+<div class="help-center-container">
+    <hr>
+    <div class="center-vertical">
+        <div class="row text-center">
+            <? if ($this->acl->isAllowed("help", "index")) { ?>
+                <div class="col-info-btn col-lg-4 col-md-6 col-sm-12">
+                    <div class="help-center-block">
+                        <img alt="" src="<?= $this->url->getStaticImage("help/aide.png", "", true) ?>"/>
+                        <h2><?= $this->translater->get("ZONE_SUPPORT_1") ?></h2>
+                        <p><?= $this->translater->get("HELP_13") ?></p>
+                        <a href="<?= $this->url->getUrl("settings/help/"); ?>"
+                           class="btn btn-primary btn-md"><?= $this->translater->get("HELP_14") ?></a>
+                    </div>
+                </div>
+            <? } ?>
+            <? if ($this->acl->isAllowed("support", "index")) { ?>
+                <div class="col-info-btn col-lg-4 col-md-6 col-sm-12">
+                    <div class="help-center-block">
+                        <img alt="" src="<?= $this->url->getStaticImage("help/support.png", "", true) ?>"/>
+                        <h2><?= $this->translater->get("HELP_15") ?></h2>
+                        <p><?= $this->translater->get("HELP_8") ?></p>
+                        <a id="helpcenter-btn-gotosupport" href="<?= $this->url->getUrl("settings/support/"); ?>"
+                           class="btn btn-primary btn-md"><?= $this->translater->get("HELP_11") . $badge ?></a>
+                    </div>
+                </div>
+            <? } ?>
+            <div class="col-info-btn col-lg-4 col-md-6 col-sm-12">
+                <div class="help-center-block">
+                    <img alt="" src="<?= $this->url->getStaticImage("help/tuto.png", "", true) ?>"/>
+                    <h2><?= $this->translater->get("HELP_16") ?></h2>
+                    <p><?= $this->translater->get("HELP_17") ?></p>
+                    <a href="<?= $videosLink ?>" target="_blank" class="btn btn-primary btn-md"><?= $this->translater->get("HELP_18") ?></a>
+                </div>
+            </div>
+            <div class="col-info-btn col-lg-4 col-md-6 col-sm-12">
+                <div class="help-center-block">
+                    <img alt="" src="<?= $this->url->getStaticImage("help/academy.png", "", true) ?>"/>
+                    <h2><?= $this->translater->get("HELP_19") ?></h2>
+                    <p><?= $this->translater->get("HELP_20") ?></p>
+                    <a href="<?= $academyLink ?>" target="_blank" class="btn btn-primary btn-md"><?= $this->translater->get("HELP_21") ?></a>
+                </div>
+            </div>
+            <div class="col-info-btn col-lg-4 col-md-6 col-sm-12">
+                <div class="help-center-block">
+                    <img alt="" src="<?= $this->url->getStaticImage("help/showcases.png", "", true) ?>"/>
+                    <h2><?= $this->translater->get("HELP_22") ?></h2>
+                    <p><?= $this->translater->get("HELP_23") ?></p>
+                    <a href="<?= $showcasesLink ?>" target="_blank" class="btn btn-primary btn-md"><?= $this->translater->get("HELP_24") ?></a>
+                </div>
+            </div>
+            <div class="col-info-btn col-lg-4 col-md-6 col-sm-12">
+                <div class="help-center-block">
+                    <img alt="" src="<?= $this->url->getStaticImage("help/blog.png", "", true) ?>"/>
+                    <h2><?= $this->translater->get("HELP_25") ?></h2>
+                    <p><?= $this->translater->get("HELP_26") ?></p>
+                    <a href="<?= $blogLink ?>" target="_blank" class="btn btn-primary btn-md"><?= $this->translater->get("HELP_27") ?></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

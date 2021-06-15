@@ -1,0 +1,291 @@
+<div id="main">
+
+    <?= $this->partial("partials/modalOnboardingVideo"); ?>
+
+    <?php $labelButton = '<i class="fa fa-plus"></i> ' . $this->translater->get(($activeMenu == "apps" ? "RESELLER_32" : "RESELLER_31")) ?>
+    <?= $this->view->partial("partials/title-page", array(
+            "title" => $title,
+            "right" => '<button class="btn btn-success btn-sm btn_add ' . ($this->reseller->isDisabled($agence) ? "disabled" : "") . '" data-toggle="modal" data-target="#myModal">' . $labelButton . '</button> '),
+            "videoLink" => ($freeTrial) ? '<span id="video-link" class="text-warning video-link" data-toggle="modal"
+                      data-target="#modal-video"><img class="onboarding-video-play-icon" src="' . $this->url->getStaticImage("play_icon.svg") . '" alt="play icon"><strong>' . $this->translater->get("RESELLER_130") . '</strong></span>' : ''
+                  )
+    );
+
+    echo $this->getContent();
+
+    if ($activeMenu == "apps") {
+        $this->partial("partials/apps_table");
+    } else {
+        $this->partial("partials/webzine_table");
+    }
+
+    //    $this->partial("partials/modalWebzine");
+
+    if ($this->reseller->isDisabled($agence)): ?>
+
+        <script>
+            $(function () {
+                $(".table-hover").removeClass('table-hover').css('opacity', '0.5').on('click', function (e) {
+                    e.stopPropagation();
+                    return false;
+                })
+            });
+        </script>
+
+    <? else : ?>
+
+
+        <div class="modal fade static" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                                    class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            <?= $this->translater->get(($activeMenu == "apps" ? "RESELLER_6" : "RESELLER_7"), $language, "GeLangage") ?>
+                        </h4>
+                    </div>
+                    <div class="modal-footer" style="padding-top: 15px">
+                        <div class="indexModalMenu">
+                            <div class="indexModalMenuItem active_title" data-id="1">
+                                <?= $this->translater->get("RESELLER_33", $language, "GeLangage") ?>
+                            </div>
+                            <div class="indexModalMenuItem" data-id="-1">
+                                <div><?= $this->translater->get(($activeMenu == "apps" ? "RESELLER_22" : "RESELLER_8")) ?></div>
+                            </div>
+                        </div>
+                        <div id="indexModalNew">
+
+                            <div class="indexModalNewBt">
+                                <?php if ($activeMenu == "apps"): ?>
+                                    <?php if ($alphaProject->isResellerPlanV3() && $alphaProject->isV3() && $agence->id_agence != 559): ?>
+                                        <div><?= $this->translater->get("GBRESELLER_122", $language, "GeLangage") ?></div>
+                                        <br/>
+                                        <a href="<?= $alphaProject->getDomainRoot() . "/manage/migrate/" ?>"
+                                           target="_blank">
+                                            <button type="button"
+                                                    class="btn btn-success"><?= str_replace("[ALPHA]", "<em>" . $alphaProject->getBeautifulWebzineName() . "</em>", $this->translater->get("GBRESELLER_123", $language, "GeLangage")) ?></button>
+                                        </a>
+                                    <? else: ?>
+                                        <form id="form-create" action="<?= $this->url->getUrl("index/index/create") ?>"
+                                              method="post">
+                                            <?= $this->tag->hiddenField(["action", "value" => "createapp"]) ?>
+                                            <div class="form-group">
+                                                <label><?= $this->translater->get("APP_GOODBARBER_53", $language, "Langage") ?></label>
+                                                <?= $this->tag->textField(["appname", "class" => "form-control", "maxlength" => 15]) ?>
+                                                <span class="help-block"></span>
+                                            </div>
+
+                                            <?php if ($alphaProject->isResellerClassicAndShopPlan() || $alphaProject->isResellerPlatinumPlan()) : ?>
+                                                <div class="form-group">
+                                                    <label><?= $this->translater->get("GBRESELLER_SHOP_TYPE_APP") ?></label>
+
+                                                    <?php
+                                                    // Bouton radio pour type d'app (standard ou shop)
+                                                    $listProcessMode = array(
+                                                        'classic' => $this->translater->get("GBRESELLER_SHOP_TYPE_APP_CLASSIC"),
+                                                        'shop' => $this->translater->get("GBRESELLER_SHOP_TYPE_APP_SHOP")
+                                                    );
+                                                    $couponProcess = new \Common\Forms\Elements\RadioGroup("typePlan", ["elements" => $listProcessMode]);
+                                                    echo $couponProcess;
+
+                                                    ?>
+
+                                                </div>
+                                            <?php endif ?>
+
+
+                                            <div class="form-group" id="categorie-group-classic">
+                                                <label><?= $this->translater->get("APP_GOODBARBER_177", $language, "Langage") ?></label>
+                                                <?= $this->tag->selectStatic(["categorie_classic", $categoriesClassic, "class" => "form-control"]) ?>
+                                            </div>
+
+                                            <div class="form-group" id="categorie-group-shop" style="display:none">
+                                                <label><?= $this->translater->get("APP_GOODBARBER_177", $language, "Langage") ?></label>
+                                                <?= $this->tag->selectStatic(["categorie_shop", $categoriesShop, "class" => "form-control"]) ?>
+                                            </div>
+
+                                            <div id="categorie-comment-bloc"
+                                                 class="form-group" <?php echo(!empty($categorie) && $categorie == 161 ? "" : " style=\"display:none\"") ?>>
+                                                <label><?= $this->translater->get("APP_GOODBARBER_187", $language, "Langage") ?></label>
+                                                <?= $this->tag->textField(["categorie_comment", "class" => "form-control"]) ?>
+                                            </div>
+
+                                            <div class="pull-right">
+                                                <button type="submit"
+                                                        class="btn btn-success"> <?= $this->translater->get("AJOUTER", $language, "GeLangage") ?></button>
+                                            </div>
+                                        </form>
+                                    <? endif ?>
+                                <? else: ?>
+                                    <div><?= $this->translater->get("RESELLER_35") ?></div>
+                                    <a href="<?= ($activeMenu == "webtv" ? "http://www.wmaker.tv/tarifs/" : "http://www.wmaker.net/tarifs/") ?>"
+                                       target="_blank">
+                                        <button type="button"
+                                                class="btn btn-success"><?= $this->translater->get("RESELLER_36", $language, "GeLangage") ?></button>
+                                    </a>
+                                <?php endif ?>
+                            </div>
+                        </div>
+                        <div id="indexModalEx">
+                            <? if (count($otherWebzines) > 0): ?>
+                                <div class="modal_footer_content"><?= $this->translater->get("RESELLER_9", $language, "GeLangage") ?></div>
+
+                                <form action="<?= $this->url->getUrl("index/index") ?>" method="post">
+                                    <div id="indexModalExSelect">
+                                        <select class="form-control" id="modal_exist_apps" name="id_webzine">
+                                            <? foreach ($otherWebzines as $other): ?>
+                                                <option value="<?= $other->id_webzine ?>"
+                                                        data-has-paid-addon="<?= intval(!empty($hasPaidAddonsWebzines[$other->id_webzine])); ?>">
+                                                    <?= $other->id_webzine . " - " . (!empty($other->domaine) ? $other->domaine : preg_replace("#^duoapps-#", "", $other->identifiant)) ?>
+                                                </option>
+                                            <? endforeach ?>
+                                        </select>
+                                    </div>
+                                    <div id="alert-has-paid-addon"
+                                         class="alert alert-danger"><?= $this->translater->get("GBRESELLER_99", $language, "GeLangage") ?></div>
+                                    <div id="<?= (\Control::GoodIp() ? "goodip" : "") ?>add_exist_apps"
+                                         class="indexModalExBt pull-right">
+                                        <button type="submit"
+                                                class="btn btn-success"> <?= $this->translater->get("AJOUTER", $language, "GeLangage") ?></button>
+                                    </div>
+                                </form>
+                            <? else: ?>
+                                <div class="modal_footer_content">
+                                    <?= $this->translater->get($activeMenu == "apps" ? "RESELLER_37" : "RESELLER_38", $language, "GeLangage") ?>
+                                </div>
+                            <? endif ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <? endif ?>
+</div>
+
+<script>
+    var nbMinCarAppName = 4;
+    var errorMinCarAppName = '<?= str_replace("[X]", 4, $this->translater->get("PAGE2_FORMULAIRE_5", $language, "Langage")); ?>';
+    var errorMaxCarAppName = '<?= str_replace("[X]", 15, $this->translater->get("PAGE2_FORMULAIRE_6", $language, "Langage")); ?>';
+    var errorInvalidAppName = '<?= $this->translater->get("APP_GOODBARBER_28", $language, "Langage"); ?>';
+    var errorExistsAppName = '<?= $this->translater->get("APP_GOODBARBER_27", $language, "Langage"); ?>';
+    var errorInvalidFirstCharAppName = '<?= $this->translater->get("APP_GOODBARBER_85", $language, "Langage"); ?>';
+    var errorCreationProcess = '<?= $this->translater->get("GBRESELLER_57", $language, "Langage"); ?>';
+
+    $(function () {
+
+        $('#modal_exist_apps').on('change', function () {
+            var val = $(this).val();
+            var hasPayAddon = $('#modal_exist_apps option[value="' + val + '"]').data('has-paid-addon');
+            if (hasPayAddon == 0) {
+                $('#alert-has-paid-addon').hide();
+                $('#add_exist_apps').show();
+            } else {
+                $('#alert-has-paid-addon').show();
+                $('#add_exist_apps').hide();
+            }
+        });
+        $('#modal_exist_apps').trigger('change');
+
+
+        if ($('#categorie_classic').val() == 161) {
+            $('#categorie-comment-bloc').show();
+        }
+
+        $(document).on('change', '#categorie_classic', function () {
+            $('#categorie-comment-bloc').hide();
+            if ($(this).val() == 161) {
+                $('#categorie-comment-bloc').show();
+            }
+        });
+
+        $('#appname').on('keydown', function () {
+            resetErrorClass($(this).parent().parent());
+            $(this).next().html('');
+        });
+
+        $('#typePlan_shop, #typePlan_classic').on('click', function () {
+            if ($('#typePlan_shop').is(':checked')) {
+                $('#categorie-group-shop').show();
+                $('#categorie-group-classic').hide();
+            } else {
+                $('#categorie-group-classic').show();
+                $('#categorie-group-shop').hide();
+            }
+        });
+        // Dynammic CSS
+        $('#typePlan_classic').closest('div').css('margin-top', '0');
+
+
+        $('#form-create').on('submit', function (e) {
+            var tmp_ok = false;
+
+            var obj = $("#appname");
+
+            obj.val(obj.val().toLowerCase());
+
+            if (obj.val().length < nbMinCarAppName) {
+                addErrorClass($("#appname"), 'error');
+                $("#appname").next().html(errorMinCarAppName);
+            } else if (obj.val().match(/^[^a-z]/g)) {
+                addErrorClass($("#appname"), 'error');
+                $("#appname").next().html(errorInvalidFirstCharAppName);
+            } else if (obj.val().match(/[^a-z0-9]/g)) {
+                addErrorClass($("#appname"), 'error');
+                $("#appname").next().html(errorInvalidAppName);
+            } else {
+
+                $.post('<?= $this->url->getUrl("index/checkappname") ?>', 'appname=' + obj.val(), function (data) {
+                    if (data != '') {
+                        addErrorClass(obj, 'error');
+                        obj.next().html(data);
+                    } else {
+                        $.loading(true);
+
+                        var selectorCategory = ($('#typePlan_shop').prop('checked')) ? '#categorie_shop' : '#categorie_classic';
+
+                        args = "";
+                        args += "appname=" + $('#appname').val();
+                        args += "&typePlan=" + ($('#typePlan_shop').prop('checked') ? 'shop' : 'classic');
+                        args += "&categorie=" + $(selectorCategory).val();
+
+                        if ($('#categorie_classic').val() == 161) {
+                            args += "&categorie_comment=" + $('#categorie_comment').val();
+                        }
+
+                        $.post('<?= $this->url->getUrl("index/create") ?>', args, function (data) {
+                            if (data == 'ok') {
+                                location.reload();
+                            } else {
+                                addErrorClass($("#appname"), 'error');
+                                $.loading(false);
+                                $("#appname").next().html('Error during creation process');
+                            }
+                        });
+                    }
+                });
+            }
+
+            $('.btn').button('reset');
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+
+
+        // Si on clique sur une ligne d'un back sans href et donc sans acces on affiche le message
+        $('table.table-reseller').on('click', 'tr.notAcces td:not(:last-child)', function (ele) {
+            $(this).parent().find('.popoverNotCanChange').trigger("click");
+        });
+
+        // clique sur la croix d'un webzine
+        $('table.table-reseller').on('click', 'tr.appDesactiv[href]', function () {
+            var modalWebzine = $('#modalWebzine').modal('show');
+//        modalWebzine.find("#reactiveWebzine").attr('href',$(this).attr('href'));
+            modalWebzine.find("#reactiveWebzine").val($(this).attr('data-id'));
+            modalWebzine.find("#deleteWebzine").val($(this).attr('data-id'));
+        })
+    });
+</script>
+

@@ -1,0 +1,18 @@
+<header class="row header_page">
+    <div class="col-xs-12">
+        <div class="pull-left">
+            <h1 class="main_add_title title_page">
+                <? if (!empty($back)) : ?>
+                    <? $title = '<a class="back" href="' . $back . '"> <i class="fa fa-arrow-circle-left"> </i> ' . $this->translater->get("RETOUR") . '</a> '; ?>
+                <? endif ?>
+                <?= $title ?>
+            </h1>
+        </div>
+        <div class="pull-right">
+            <?= (!empty($videoLink) ? $videoLink : "") ?>
+            <?= (!empty($right) ? $right : "") ?>
+        </div>
+        <div class="clearfix"></div>
+        <div class="clearfix separate-line no-margin-top"></div>
+    </div>
+</header>

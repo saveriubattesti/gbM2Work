@@ -1,0 +1,76 @@
+<h4 class="first"><strong><?= strtoupper($this->translater->get('APPS_INFOS_NOTES')) ?></strong> <span
+            class="text-danger"><strong><?= $this->translater->getStatic('GOOD IP') ?></strong></span></h4>
+<?= $this->ui->changeTextWithpreview([
+    "objet" => "compilation/store/notes",
+    "type_input" => "textarea", "hide_button" => true, "platform" => $platform, "class" => "form-control", "style" => "height: 60px;"
+]);
+?>
+
+<? if ($platform == "android") : ?>
+
+    <h3><strong><?= $this->translater->get("APPS_INFOS_GB_EMAILS") ?></strong> <span
+                class="text-danger"><strong><?= $this->translater->getStatic('GOOD IP') ?></strong></span></h3>
+    <div class="row">
+        <div class="col-sm-6">
+            <label><?= $this->translater->getStatic("Google Cloud") ?></label>
+            <?= $this->ui->changeTextWithpreview([
+                "objet" => "compilation/store/googlecloud",
+                "platform" => $platform, "class" => "form-control control-email allow-empty"
+            ]); ?>
+        </div>
+        <div class="col-sm-6">
+            <label><?= $this->translater->getStatic("Google Cloud Password") ?></label>
+            <?= $this->ui->changeTextWithpreview([
+                "objet" => "compilation/store/googlecloudpass",
+                "platform" => $platform, "class" => "form-control"
+            ]); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <label><?= $this->translater->getStatic("Google Play") ?></label>
+            <?= $this->ui->changeTextWithpreview([
+                "objet" => "compilation/store/googleplay",
+                "platform" => $platform, "class" => "form-control control-email allow-empty"
+            ]); ?>
+        </div>
+        <div class="col-sm-6">
+            <label><?= $this->translater->getStatic("Google Play Password") ?></label>
+            <?= $this->ui->changeTextWithpreview([
+                "objet" => "compilation/store/googleplaypass",
+                "platform" => $platform, "class" => "form-control allow-empty"
+            ]); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <strong class="text-danger"><?= strtoupper($this->translater->getStatic("Package Name")) . ": " . $packageName; ?></strong>
+        </div>
+    </div>
+    <br/>
+<? else: ?>
+    <?php if (!$this->webzine->isShopPlan()): ?>
+        <?= $this->ui->changeRadioWithPreview([
+            "objet" => "compilation/store/apptype",
+            "platform" => $platform,
+            "wrapperClass" => "app-types_radio-wrapper",
+            "display" => "list",
+            "array" => [
+                ["label" => $this->translater->get("APPS_INFOS_APP_TYPE_REGULAR"), "value" => "regular"],
+                ["label" => $this->translater->get("APPS_INFOS_APP_TYPE_CUSTOM"), "value" => "custom"],
+
+            ]]); ?>
+    <?php endif ?>
+    <?php $externaManager = new \Common\Lib\Goodbarber\Users\ExternalServicesManager($this->webzine); ?>
+    <?php if ($externaManager->hasSigninWithAppleConfigurationBlock()): ?>
+        <div class="alert alert-warning">
+            <?= $this->translater->getStatic("GOODIP msg for GB team: Signin with Apple has to be configured. <a href='" . $this->url->getUrl("publish/submit/iphone/?backtostep=3") . "'>Check Signin with Apple configuration</a>") ?>
+        </div>
+    <?php endif ?>
+<? endif ?>
+<script>
+    $(function () {
+        $('#compilation_store_notes').height(($('#compilation_store_notes').prop('scrollHeight')));
+    });
+
+</script>

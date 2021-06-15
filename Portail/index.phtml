@@ -1,0 +1,55 @@
+
+<div id="<?=(in_array($routerControllerName, ["pwa", "native"]) ? "home" : "pricing")?>">
+    <? if (in_array($routerControllerName, ["pwa", "native"])){
+         $this->partial("partials/home/header", [
+            "title" => mb_strtoupper($this->translater->get("PRICING_1")),
+            "urlBtn" => "#detail",
+            "labelBtn" => $this->translater->get("PRICING_14"),
+            "smallInfos" => $this->translater->get('HOME_39').'. '.$this->translater->get('HOME_40')
+        ]);
+    }else {
+        $this->partial("partials/pricing/header");
+    }?>
+</div>
+
+
+<? $this->partial("partials/pricing/labels-plan-float-bar"); ?>
+
+
+
+<div id="pricing">
+
+    <div class="all-pricing">
+
+        <form action="<?=$this->url->get('create/')?>" method="post">
+            <input id="annual_tarif" type="hidden" name="annual_tarif" value="1">
+            <input type="hidden" name="offer" value="<?= $type_plan ?>">
+            <div class="container">
+                <h2 class="title-features text-primary">
+                    <?= mb_strtoupper($subtitlePage ?? $this->translater->get("PRICING_24")) ?>
+                </h2>
+
+                <? $this->partial("partials/pricing-plans"); ?>
+
+                <? $this->partial("partials/pricing/container-create-btn"); ?>
+
+                <div class="clearfix"></div>
+                <?
+                if($type_plan == "reseller"){
+                    $this->partial("partials/pricing/comparative-reseller-features-list");
+                }else{
+                    $this->partial("partials/pricing/comparative-features-list");
+                }
+
+                $this->partial("partials/pricing/container-create-btn");
+                ?>
+
+                <? $this->partial("partials/pricing/pricing-faq"); ?>
+
+            </div>
+        </form>
+
+    </div>
+
+
+</div>

@@ -1,0 +1,102 @@
+<!-- CONTAINER -->
+<div id="container" class="container-fixed page-detail-addon">
+    <?= $this->eventsManager->fire("view:renderNavBarPageTitle", $this->view, array("title" => $this->translater->get('GBADDONS_1'), "backUrl" => $backUrl, "help" => isset($linkHelp) ? $linkHelp : null)) ?>
+
+    <div class="container-content-full">
+        <div class="container-content">
+            <div class="detail">
+                <!-- NOTE: IF you feel the need to modify this partial please consider using
+                addons/detail-header-component without referencing any outside variable (acl / webzine etc..) just by
+                 passing variables in a declarative way.
+                 -->
+                <?=  $this->view->partial('addons/detail-header'); ?>
+
+                <div class="separate-line"></div>
+
+                <div class="max-width">
+
+                    <div class="detail-addon">
+                        <?= $this->view->partial("addons/" . $addon->code); ?>
+                    </div>
+
+                    <? if (!$forbiddenAddAddon): ?>
+                        <? if (!preg_match("#^soon#", $addon->etat) && !$addonAdded): ?>
+                            <div class="separate-line"></div>
+                            <footer>
+                                <div class="logo"
+                                     style="background-image:url(<?= $this->url->getStaticImage("addons/" . $addon->code . ".jpg", "", true) ?>)"></div>
+                                <h2><?= str_replace("[ADDON]", "&laquo; " . $addon->getLabel() . " &raquo;", $this->translater->get('GBADDONS_3')) ?></h2>
+
+                                <? if (!$canAddAddon): ?>
+                                    <a href="<?= $this->url->getUrl("settings/billing/subscription/") ?>"
+                                       class="btn btn-lg btn-success"><?= $this->translater->get('GBFORBIDDEN_3') ?></a>
+                                <? elseif ($this->webzine->isTest() && $this->acl->isAddonOnTest($addon->code)): ?>
+                                    <p style="font-size: 1em;"><?= $this->translater->get('GBADDONS_TEST_IN_PROGRESS') ?></p>
+                                <? else : ?>
+                                    <? $this->view->partial("addons/detail-form", array("btn_class" => "btn-lg")) ?>
+                                    <? if (!empty($extras)): ?>
+                                        <p class="extras-footer"><?= $extras ?></p>
+                                    <? endif ?>
+                                <? endif ?>
+                            </footer>
+                        <? endif ?>
+                    <? endif ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('form').on('submit', function () {
+        $.loading(true);
+    })
+
+    if ($('.action').find('p.extras').length !== 0 && $('.action').find('p.availability-infos').length !== 0) {
+        $('.action').css('padding-top', '14px');
+    }
+</script>
+
+<?
+
+$this->view->inlineCss .= "
+.detail { text-align: center; margin-bottom: 40px;}
+.detail .logo { width: 125px; height: 125px; border-radius: 125px; background: center center; background-size: auto 127px; }
+.detail .max-width { max-width: 992px; margin: 0 auto; }
+.detail .separate-line { padding-bottom: 50px; margin-top: 50px; }
+.detail header { text-align: left; background: #f3f3f3; padding: 18px;}
+.detail header .logo { float: left; margin-right: 30px; }
+.detail header .action { float: right; width: 285px; padding-left: 20px; border-left: 1px solid #DDD; height: 125px; text-align:center; padding-top: 40px;}
+.detail header .action.has-unlimited-btn { padding-top: 0;}
+.detail header .action i {margin-right: 10px; }
+.detail header h2 { line-height: 2em; margin: 0; color: " . $this->config->domColor . "; font-size: 30px; font-weight: 400; }
+.detail header p { font-size: 1.2em; }
+
+.detail footer { background: #f3f3f3; padding: 18px; }
+.detail footer .logo { margin: 0 auto; }
+.detail footer h2 { line-height: 1.5em; margin: 20px 0; font-size: 28px; font-weight: 300; color: #777;  }
+.detail footer .btn { min-width: 180px;}
+.detail footer .btn i { margin-right: 10px;}
+
+.detail-addon > h2 { font-size: 44px; font-weight: 400; line-height: 1.2em; }
+.detail-addon > h3 { font-size: 38px; font-weight: 300; color: " . $this->config->domColor . "; line-height: 1em; }
+.detail-addon > h4 { font-size: 22px; margin: 10px 0 20px; }
+.detail-addon > img, .detail .info-on-img img, .detail-addon > .carousel { margin: 60px auto 40px; }
+.detail-addon > p { font-size: 1.1em;}
+.detail-addon .carousel-inner .item img { text-align: center; margin: 0 auto;  }
+
+.detail p.extras { font-size: 12px; margin-top: 5px; margin-bottom: 5px; }
+.detail p.availability-infos { font-size: 12px; margin-top: 5px; margin-bottom: 5px; }
+.detail p.extras-footer { margin-top: 10px; }
+
+.detail .info-on-img { position: relative; }
+.detail .info-on-img .content { position: absolute; width: 100%; }
+.detail .info-on-img .content .bloc { float: left; text-align:center; }
+
+#unlimited-btn {margin-top: 20px;}
+#unlimited-btn span {font-weight: 400; display: inline-block; margin-bottom: 5px;}
+
+.detail-addon .carousel-inner > .item { padding: 0 20px; }
+";
+
+?>

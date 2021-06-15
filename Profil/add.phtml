@@ -1,0 +1,224 @@
+<?php
+
+$user = $form->getEntity();
+$socialAccounts = $form->getUserSocialAccountsElements();
+
+$section = $this->sectionManager->getAllByType($this->webzine, "GBModuleTypeProfile");
+
+$allowAvatar = $this->paramsManager->get("iphone", "sections/allowAvatar", "sections", $section[0]->id_param) && !empty($user);
+
+$realyBackUrl = (!empty($backUrl) ? $backUrl : $this->url->getUrl("users/list/"));
+$realyBackTitle = (!empty($backTitle) ? $backTitle : $this->translater->get("GBSTATS_SOCIAL_3"));
+
+if (empty($user) && $isV4) {
+    $realyBackTitle = $this->translater->get("GBUSER_LIST_1");
+}
+
+?>
+
+<div id="container" class="container-fixed">
+    <?= $this->eventsManager->fire("view:renderNavBarPageTitle", $this->view, array("title" => $realyBackTitle, "back" => $realyBackUrl)); ?>
+
+    <div class="container-content-full">
+        <div class="container-content">
+
+            <?
+            if (empty($user) && $isV3) {
+                echo "<p>" . $this->translater->get("GBUSER_LIST_1") . "</p>";
+            } ?>
+
+            <div class="alert" style="display:none"></div>
+
+            <?= $this->getContent() ?>
+            <?= $this->flashSession->output() ?>
+
+            <form id="user-save" method="post" action="<?= $form->getAction() ?>">
+                <div class="row">
+                    <?php if ($allowAvatar): ?>
+                        <div class="col-md-3">
+                            <label class="show"><?= $this->translater->get("EDITER_ARTICLE_21") ?></label>
+                            <div id="userphoto-container" class="text-center">
+                                <?= $this->partial("partials/users/photo", array("user" => (!empty($user) ? $user : null))) ?>
+                                <? if ($form->has('punches')) {
+                                    echo $this->partial("partials/loyalty/customers/summaryInfos");
+                                } ?>
+                            </div>
+                        </div>
+                    <?php endif ?>
+
+                    <div class="col-md-<?= ($allowAvatar ? 9 : 12) ?>">
+                        <? if ($form->has('punches')) {
+                            echo $form->renderLoyaltyElements();
+                        } ?>
+
+                        <div class="row">
+                            <?php foreach (["login", "email"] as $name): ?>
+                                <div class="col-md-6">
+                                    <?= $form->renderDecorated($name) ?>
+                                </div>
+                            <?php endforeach ?>
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <?php if ($form->has("password")): ?>
+                            <div class="row">
+                                <?php foreach (["password", "confirmpassword"] as $name): ?>
+                                    <div class="col-md-6">
+                                        <?= $form->renderDecorated($name) ?>
+                                    </div>
+                                <?php endforeach ?>
+                                <div class="clearfix"></div>
+                            </div>
+                        <?php endif ?>
+
+                        <?php if ($form->has("groups[]")) : ?>
+                            <?= $form->renderDecorated("groups[]") ?>
+                        <?php endif ?>
+
+                        <hr/>
+                        <?= $form->renderUserCustomElements() ?>
+
+                        <?php if (!empty($socialAccounts)): ?>
+                            <div class="row">
+                                <div class="social col-md-6">
+                                    <label class="show"><?= $this->translater->get("MENU_11") ?></label>
+                                    <?php foreach ($socialAccounts as $social): ?>
+                                        <a class="brand-label <?= $social->getName() ?> img-circle <?= ($social->getValue() != "" ? "on" : "off") ?>"
+                                           href="#"
+                                           data-social="<?= $social->getName() ?>"><?= ($social->getName() === "snapchat" ? '<img class="snapchat-icon" src="/assets/gbicon/img/generic/snapchat.png">' : '') ?></a>
+                                    <?php endforeach ?>
+                                    <?php foreach ($socialAccounts as $social): ?>
+                                        <div class="social-input" id="social-<?= $social->getName() ?>">
+                                            <?= $form->renderDecorated($social->getName()) ?>
+                                        </div>
+                                    <?php endforeach ?>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        <?php endif ?>
+                    </div>
+                </div>
+                <footer class="submission is-fixable">
+                    <?php if (!empty($delButton)): ?>
+                        <button type="button"
+                                class="btn btn-md btn-danger pull-left" <?= $delButton ?>><?= $this->translater->get("SUPPRIMER") ?></button>
+                    <?php endif ?>
+                    <button type="submit"
+                            class="btn btn-md btn-success"><?= $this->translater->get("SAUVEGARDER") ?></button>
+                </footer>
+            </form>
+        </div>
+    </div>
+</div>
+
+<?php
+
+if ($isV3) {
+    $this->view->inlineCss .= "#user-save { background: #f3f3f3; padding: 20px; position: relative}";
+}
+$this->view->inlineCss .= "
+#userphoto-container a.upload-image, #userphoto-container a.upload-chose-file { height: 160px; line-height: 160px; width: 160px; }
+#userphoto-container a {background: none no-repeat scroll center center rgba(0, 0, 0, 0);border-radius: 50% !important;}
+#userphoto-container a.upload-image-exists {border:none; background-size: cover; }
+#userphoto-container a.upload-image-exists .black-opacity, #userphoto-container a.upload-image-exists .black-opacity:hover {background:none no-repeat scroll center center rgba(0, 0, 0, 0);}
+
+.social > a {height: 60px;line-height: 40px;text-align: center;color: #FFFFFF;display: inline-block;padding: 10px 12px 12px 20px;font-size: 1.2em;width: 60px;margin: 5px;}
+.social .social-input { display: none }
+.social :after {border-radius: 50%;height: 25px;width: 25px;line-height: 24px;display: block;position: relative;font-size: 0.7em;margin: -30px;right: -50px;bottom: -20px;}
+.social .off:after {content: '+';background: #71bf07;}
+.social .off {background: #cccccc;}
+.social-input { padding-top: 10px }
+.error-whatsapp { font-weight: 400; display: none;}
+.form-group.has-error .error-whatsapp { display: block;}
+.form-group.has-error .help-block + .error-whatsapp { display: block;}
+";
+?>
+
+<script>
+
+    // pas de ":" ou de whitespace character dans le passeword
+    $('#user-save [type="password"]').off('keyup.passwordremoveChar').on('keyup.passwordremoveChar', function () {
+        $(this).val($(this).val().replace(/:/g, '').replace(/\s+/g, ''));
+    });
+
+    // pas whitespace character dans le login ou le password
+    $('#user-save #login, #user-save #email').off('keyup.loginremoveChar').on('keyup.loginremoveChar', function () {
+        $(this).val($(this).val().replace(/\s+/g, ''));
+    });
+
+    // On affiche le champs social en erreur 
+    $('footer.submission .btn-success').on('click', function () {
+        if ($('.social .social-input .form-group.has-feedback:hidden').length) {
+            $('a.brand-label.' + $('.social .social-input .form-group.has-feedback input').attr('id')).trigger('click');
+        }
+    });
+
+    $('.social a').on('click', function () {
+        var self = $(this);
+
+        if (self.hasClass('off')) {
+            self.removeClass('off').addClass('on');
+
+            $('.social a').each(function () {
+                if ($(this).data('social') != self.data('social')) {
+                    if ($('#' + $(this).data('social')).val() == "") {
+                        $(this).removeClass('on').addClass('off');
+                    }
+
+                    $('#social-' + $(this).data('social')).hide();
+                }
+            });
+
+            $('#social-' + self.data('social')).show();
+        } else {
+            if ($('#' + self.data('social')).val() == '') self.removeClass('on').addClass('off');
+
+            $('.social a').each(function () {
+                if ($(this).data('social') != self.data('social')) {
+                    if ($('#' + $(this).data('social')).val() == "") {
+                        $(this).removeClass('on').addClass('off');
+                    }
+
+                    $('#social-' + $(this).data('social')).hide();
+                }
+            });
+
+            $('#social-' + self.data('social')).toggle();
+        }
+    });
+
+    <? if ($form->has('punches-total')){?>
+
+    var oldNbPunch = $('#punches').val();
+
+    $('#punches').on('change', function () {
+        var currentPoint = parseInt($(this).val());
+
+        var newTotalPunch = parseInt($('#punches-total').select2('val')) + (currentPoint - oldNbPunch);
+        var maxTotalPunch = parseInt($('#punches-total option:last').attr('value'));
+        newTotalPunch = Math.max(Math.min(newTotalPunch, maxTotalPunch), 0);
+        $('#punches-total').select2('val', newTotalPunch);
+        oldNbPunch = currentPoint;
+
+        var totalPoint = $('#punches-total').select2();
+        if (parseInt(totalPoint) < parseInt(currentPoint)) {
+            $('#punches-total').select2('val', currentPoint);
+        }
+
+        var pointsValues = $('#punches-total').find('option');
+        pointsValues.removeAttr('disabled');
+        pointsValues.each(function (index, option) {
+            var value = $(option).val();
+            if (value < currentPoint) {
+                $(this).attr('disabled', 'disabled');
+            } else {
+                return false;
+            }
+        });
+    });
+
+    $(function () {
+        $('#punches').trigger('change');
+    });
+    <?}?>
+</script>

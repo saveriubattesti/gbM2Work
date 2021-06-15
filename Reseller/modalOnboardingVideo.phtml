@@ -1,0 +1,24 @@
+<!-- Modal video first time -->
+<div class="modal fade" id="modal-video" tabindex="-1" role="dialog" aria-labelledby="modal-video"
+     aria-hidden="true">
+    <div class="modal-dialog modal-responsive">
+        <div class="modal-content">
+            <div class="container">
+                <iframe src="//player.vimeo.com/video/547509805" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    <?php if ($firstTimeVideo): ?>
+        $(function () {
+            $('#modal-video').modal("show");
+        });
+    <?php endif ?>
+
+    $('#modal-video').on('hidden.bs.modal', function () {
+        let iframe = this.getElementsByTagName("iframe")[0].contentWindow;
+        iframe.postMessage('{"method":"pause"}', '*');
+    });
+</script>
